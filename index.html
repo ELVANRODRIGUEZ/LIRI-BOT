@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <title>PERSONAL PORTFOLIO</title>
+    <title>LIRI BOT</title>
 
 
 
@@ -47,6 +47,45 @@
 </head>
 
 <body>
+
+    <div class="container-fluid">
+        <div class="row bodyRow">
+            <div class="textCol col-12 justify-content-center">
+                <h3 id="projectName">LIRI BOT</h3>
+                <div id="videoContainer">
+                    <video class="videos" id="shownVideo">
+                        <source id="videoSource" src="assets/videos/Liri_Bot.mp4" type="video/mp4">
+                    </video>
+                    <img id="playPauseIcon" src="assets/images/PlayPausIcon.png">
+                </div>
+                <p id="projectDescprition" class="genText">
+                    LIRI stands for Language Interpretation and Recognition
+                    Interface. LIRI-bot is a command line Node based app that takes in certain input and returns data.
+                    In this project, LIRI bot will prompt you to enter either one of the following possible
+                    actions:<br><br>
+                </p>
+                <ul class="genText">
+                    <li>Search on Spotify for an input song.</li>
+                    <li>Search on OMDB for an input movie.</li>
+                    <li>Search on Bands in Town for concerts of an input band or single artist.</li>
+                    <li>
+                        Search on any of the previous API's based on a text file that will point LIRI to an action
+                        and an input search key.
+                    </li>
+                </ul><br><br>
+                <p id="projectDescprition" class="genText">
+                    In order to beautify the input, this app uses the "inquirer" NPM package. This limits the actions
+                    asked to Liri-Bot to the ones it has and none others. Also, it guides the user to type in the second
+                    argument needed for the calls to be successful.
+                </p><br><br>
+                <p class="genText">
+                    You can take a look at the project repo at: <a id="siteRepo" class="links"
+                        href="https://github.com/ELVANRODRIGUEZ/LIRI-BOT" target="_blank">LIRI-BOT_repo.</a>
+                </p>
+
+            </div>
+        </div>
+    </div>
 
     <!-- Personalized Javacript file -->
     <script src="assets/javascript/javascript.js"></script>
