@@ -3,8 +3,10 @@
 require("dotenv").config(); // DOTENV for environment variables managing.
 var Spotify = require("node-spotify-api"); // SPOTIFY package importing.
 var keys = require("./keys.js"); // Key file importing.
-var axios = require("axios");
+var axios = require("axios"); // Package to make HTTP requests.
 var fs = require("fs"); // Native "fs" package inclusion for file writing and reading.
+var inquirer = require("inquirer"); // Package to beautify and amplify data input.
+var moment = require("moment"); // Moment package.
 
 var spotifyKeys = new Spotify(keys.spotify);
 
@@ -27,7 +29,9 @@ var spotifyCall = function (songBand) {
         console.log("Ooops! An: " + err + " occured.");
         return;
       }
+      // console.log(data);
       var songs = data.tracks.items;
+      // console.log(songs);
       console.log(
         "\n\n" + songs.length.toString() +
         " INPUTS RETRIEVED: " + "\n\n");
@@ -115,7 +119,7 @@ var BandsInTownCall = function (band) {
           "   Held at: " + response.data[i].venue.name + "\n" +
           "   City: " + response.data[i].venue.city + "\n" +
           "   Country: " + response.data[i].venue.country + "\n" +
-          "   Date: " + response.data[i].datetime + "\n" +
+          "   Date: " + moment(response.data[i].datetime).format("MMMM DD, YYYY") + ".\n" +
           "========================================================" + "\n\n");
       }
     })
@@ -144,19 +148,17 @@ var readFromFile = function () {
     var dataArr = data.split(',');
     console.log(dataArr);
     if (dataArr.length === 2) {
-      userInput(dataArr[0], dataArr[1]);
+      userInputSimple(dataArr[0], dataArr[1]);
     } else if (dataArr.length === 1) {
-      userInput(dataArr[0]);
+      userInputSimple(dataArr[0]);
     }
   });
 };
 
 
+// ======================================== SELECT THE CALL FROM FILE
 
-
-// ======================================== SELECT THE CALL
-
-var userInput = function (caseData, input) {
+var userInputSimple = function (caseData, input) {
   switch (caseData) {
     case "spotifyIt": // SPOTIFY
       spotifyCall(input);
@@ -167,19 +169,61 @@ var userInput = function (caseData, input) {
     case "bandIt": // BANDS IN TOWN
       BandsInTownCall(input);
       break;
-    default:
+  }
+};
+
+
+// ======================================== SELECT THE CALL AND ASK FOR INPUT
+
+function userInput(selectedAction, input) {
+  switch (selectedAction) {
+    case "spotifyIt": // SPOTIFY
+      inquirer.prompt([{
+        type: "input",
+        message: "Type the song name you would like me to search for:",
+        name: "secondArg"
+      }]).then(function (soptifyResp) {
+        spotifyCall(soptifyResp.secondArg);
+      });
+      break;
+    case "movieIt": // IMDB
+      inquirer.prompt([{
+        type: "input",
+        message: "Type the movie name you would like me to search for:",
+        name: "secondArg"
+      }]).then(function (movieResp) {
+        IMDBcall(movieResp.secondArg);
+      });
+      break;
+    case "bandIt": // BANDS IN TOWN
+      inquirer.prompt([{
+        type: "input",
+        message: "Type the movie name you would like me to search for:",
+        name: "secondArg"
+      }]).then(function (concertsResp) {
+        BandsInTownCall(concertsResp.secondArg);
+      });
+      break;
+    case "myUsual": // Whatever default action is set on "random.txt" file. 
       console.log(
-        "\n\nSorry! ==========================================" + "\n" +
-        "   I didn't get your input right. \n" +
-        "   I will be giving you my default information though. \n" +
-        "   But maybe you would like to try again afterwards. \n" +
+        "\n\n=================================================" + "\n" +
+        "   I will be giving you my default information, \n" +
+        "   Maybe you would like to try again afterwards. \n" +
         "=====================================================" + "\n\n");
       readFromFile();
   }
 };
 
-var cmdLnArgs = function (argOne, argTwo) {
-  userInput(argOne, argTwo);
-};
 
-cmdLnArgs(process.argv[2], process.argv[3]);
+// ======================================== ASK FOR THE ACTION CALL
+
+inquirer.prompt([{
+  type: "list",
+  message: "Select the action you want me to execute:",
+  choices: ["spotifyIt", "movieIt", "bandIt", "myUsual"],
+  name: "action"
+}]).then(function (Response) {
+
+  userInput(Response.action);
+
+});
